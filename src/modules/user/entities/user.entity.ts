@@ -16,15 +16,14 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255 })
-  email: string;
+  @Column({ type: 'varchar', length: 255, unique: true })
+  username: string;
 
   @Exclude()
   @Column({ type: 'varchar', length: 255 })
   password: string;
 
-  @Exclude()
-  @Column({type: 'boolean'})
+  @Column({type: 'boolean', default: false})
   enabled: boolean;
 
   @Column({type: 'varchar', length: 5})

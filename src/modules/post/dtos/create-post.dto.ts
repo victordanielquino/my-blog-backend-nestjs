@@ -1,7 +1,8 @@
-import { PostCategoryEnum } from "../enums";
 import { IsArray, IsBoolean, IsEnum, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { EnumToString } from "../../../helpers/enumToString";
+
+//import { EnumToString } from "../../../helpers/enumToString";
+import { CategoryEnum } from "../../../shared/enums";
 
 export class CreatePostDto {
   @IsString()
@@ -20,9 +21,9 @@ export class CreatePostDto {
   @ApiProperty()
   content: string;
 
-  @IsEnum(PostCategoryEnum, {message: `Opcion invalida. Se esperaba: ${EnumToString(PostCategoryEnum)}`})
+  @IsEnum(CategoryEnum, {message: `Category invalid `})
   @ApiProperty()
-  category: PostCategoryEnum;
+  category: CategoryEnum;
 
   @IsArray()
   @IsString({each:true})

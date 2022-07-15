@@ -11,7 +11,7 @@ export class Rol {
   @Column({ type: 'varchar', length: 50})
   description: string;
 
-  @Column({ type: 'varchar', length: 7})
+  @Column({ type: 'varchar', length: 50})
   state: string;
 
   @CreateDateColumn({
