@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 
 import { Rol } from "../entities";
-import { RolCreateDto } from "../dtos";
+import { RolDto } from "../dtos";
 import { RolUpdateDto } from "../dtos";
 
 @Injectable()
@@ -16,28 +16,37 @@ export class RolService {
   }
 
   getOne(id: number) {
+    const rol = this._rolRepo.findOneBy({ id });
+    if (!rol) throw new NotFoundException(`Rol with id: ${id} not exist`);
+    return rol;
+  }
+
+  getOneWithUsers(id: number) {
     const rol = this._rolRepo.findOne({
       where: {
         id: id,
+      },
+      relations: {
+        users: true,
       }
     })
     if (!rol) throw new NotFoundException(`Rol with id: ${id} not exist`);
     return rol;
   }
 
-  createOne(dto: RolCreateDto) {
-    console.log(dto);
-    /*const newRol = this._rolRepo.create(dto);
-    return this._rolRepo.save(newRol);*/
+  createOne(dto: RolDto) {
+    const newRol = this._rolRepo.create(dto as any);
+    return this._rolRepo.save(newRol);
   }
 
   async updateOne(id: number, dto: RolUpdateDto) {
-    /*const rol = await this.getOne(id);
-    this._rolRepo.merge(rol, dto);
-    return this._rolRepo.save(rol);*/
+    const rol = await this.getOne(id);
+    this._rolRepo.merge(rol, dto as any);
+    return this._rolRepo.save(rol);
   }
 
-  deleteOne(id: number) {
-    return this._rolRepo.delete(id);
+  async deleteOne(id: number) {
+    const rol = await this.getOne(id);
+    return this._rolRepo.remove(rol);
   }
 }

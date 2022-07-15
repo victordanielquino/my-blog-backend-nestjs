@@ -3,25 +3,27 @@ import {
   IsNotEmpty,
   Length, IsEnum
 } from "class-validator";
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 
 import { EnumToString } from "../../../helpers/enumToString";
 import { StateEnum } from "../../../shared/enums";
 
-export class RolCreateDto {
+export class RolDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ description: 'abreviacion del rol' })
-  initial: string;
+  readonly initial: string;
 
   @IsString()
   @IsNotEmpty()
   @Length(6)
   @ApiProperty()
-  description: string;
+  readonly description: string;
 
-  @IsEnum(StateEnum, {message: `Option state invalid, se esperaba: ${EnumToString(StateEnum)}`})
+  @IsEnum(StateEnum, {message: `Option state invalid, se esperaba: ${EnumToString(StateEnum)}`, each: true})
   @IsNotEmpty()
   @ApiProperty()
-  state: StateEnum;
+  readonly state: StateEnum[];
 }
+
+export class RolUpdateDto extends PartialType(RolDto) {}

@@ -17,7 +17,11 @@ export class PostController {
 
   @Get(':id')
   getOne(@Param('id', ParseIntPipe) id: number) {
-    return this._postService.getOne(id);
+    const data = this._postService.getOne(id);
+    return {
+      message: 'resp correcta',
+      data
+    }
   }
 
   @Post()

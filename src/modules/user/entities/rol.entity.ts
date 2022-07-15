@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { StateEnum } from "../../../shared/enums";
+import { User } from "./user.entity";
 
 @Entity({ name: 'rols' })
 export class Rol {
@@ -11,8 +13,11 @@ export class Rol {
   @Column({ type: 'varchar', length: 50})
   description: string;
 
-  @Column({ type: 'varchar', length: 50})
-  state: string;
+  @Column({ type: 'varchar', length: 5, default: 'AC'})
+  state: StateEnum[];
+
+  @OneToMany(() => User, (user) => user.rol)
+  users: User[];
 
   @CreateDateColumn({
     name: 'create_at',

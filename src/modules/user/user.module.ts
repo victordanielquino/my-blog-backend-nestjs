@@ -10,6 +10,7 @@ import { RolController } from './controllers/rol.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([Rol, User])],
   controllers: [UserController, RolController],
-  providers: [UserService, RolService]
+  providers: [UserService, RolService],
+  exports: [UserService, RolService]
 })
 export class UserModule {}
