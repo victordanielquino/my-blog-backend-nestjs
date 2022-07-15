@@ -21,9 +21,9 @@ export class CreatePostDto {
   @ApiProperty()
   content: string;
 
-  @IsEnum(CategoryEnum, {message: `Category invalid `})
+  @IsEnum(CategoryEnum, {message: `Category invalid `, each: true})
   @ApiProperty()
-  category: CategoryEnum;
+  category: CategoryEnum[];
 
   @IsArray()
   @IsString({each:true})
