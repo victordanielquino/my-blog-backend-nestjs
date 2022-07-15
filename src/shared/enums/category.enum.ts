@@ -1,4 +1,4 @@
-export enum PostCategoryEnum {
+export enum CategoryEnum {
   'TECHNOLOGY',
   'LIFESTYLE',
   'CODING',

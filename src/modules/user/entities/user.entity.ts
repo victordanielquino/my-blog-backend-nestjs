@@ -1,34 +1,40 @@
 import {
+  BeforeInsert, BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
+  JoinColumn, ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
-import { Exclude } from "class-transformer";
 
 import { Rol } from "./rol.entity";
+import { hash } from "bcrypt";
+import { MaxLength, MinLength } from "class-validator";
+import { StateEnum } from "../../../shared/enums";
 
 @Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255 })
-  email: string;
+  @MinLength(6)
+  @MaxLength(128)
+  @Column({ type: 'varchar', length: 255, unique: true })
+  username: string;
 
-  @Exclude()
-  @Column({ type: 'varchar', length: 255 })
+  // @Exclude()
+  @MinLength(6)
+  @MaxLength(128)
+  @Column({ type: 'varchar', length: 255, select: false})
   password: string;
 
-  @Exclude()
-  @Column({type: 'boolean'})
+  @Column({type: 'boolean', default: false})
   enabled: boolean;
 
   @Column({type: 'varchar', length: 5})
-  state: string;
+  state: StateEnum[];
 
   @CreateDateColumn({
     name: 'create_at',
@@ -44,7 +50,15 @@ export class User {
   })
   updateAt: Date;
 
-  @OneToOne(() => Rol)
-  @JoinColumn({ name: 'rol_id' })
+  @ManyToOne(() => Rol, (rol) => rol.users)
   rol: Rol;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hasPassword() {
+    if (!this.password) {
+      return;
+    }
+    this.password = await hash(this.password, 10);
+  }
 }

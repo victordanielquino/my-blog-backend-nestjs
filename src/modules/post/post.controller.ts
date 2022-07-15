@@ -7,7 +7,7 @@ import { PostService } from "./post.service";
 @Controller('post')
 export class PostController {
 
-  constructor(private readonly _postService: PostService) {
+  constructor(private _postService: PostService) {
   }
 
   @Get()
@@ -17,7 +17,11 @@ export class PostController {
 
   @Get(':id')
   getOne(@Param('id', ParseIntPipe) id: number) {
-    return this._postService.getOne(id);
+    const data = this._postService.getOne(id);
+    return {
+      message: 'resp correcta',
+      data
+    }
   }
 
   @Post()
