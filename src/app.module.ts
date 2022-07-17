@@ -8,6 +8,7 @@ import { PostModule } from './modules/post/post.module';
 import { DatabaseModule } from './core/database/database.module';
 import { enviroments } from "./common/config/enviroments";
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './core/auth/auth.module';
 import config from "./common/config/config";
 
 @Module({
@@ -24,7 +25,8 @@ import config from "./common/config/config";
     }),
     PostModule,
     DatabaseModule,
-    UserModule
+    UserModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

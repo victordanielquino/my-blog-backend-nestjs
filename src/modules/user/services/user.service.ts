@@ -56,4 +56,11 @@ export class UserService {
     const user = await this.getOne(id);
     return await this._userRepo.remove(user);
   }
+
+  async getOneWithUsername(username: string) {
+    return await this._userRepo.findOne({
+      where: { username },
+      relations: { rol:true }
+    });
+  }
 }

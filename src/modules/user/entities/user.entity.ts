@@ -13,6 +13,7 @@ import { Rol } from "./rol.entity";
 import { hash } from "bcrypt";
 import { MaxLength, MinLength } from "class-validator";
 import { StateEnum } from "../../../shared/enums";
+import { Exclude } from "class-transformer";
 
 @Entity({ name: 'users' })
 export class User {
@@ -24,10 +25,10 @@ export class User {
   @Column({ type: 'varchar', length: 255, unique: true })
   username: string;
 
-  // @Exclude()
+  @Exclude()
   @MinLength(6)
   @MaxLength(128)
-  @Column({ type: 'varchar', length: 255, select: false})
+  @Column({ type: 'varchar', length: 255})
   password: string;
 
   @Column({type: 'boolean', default: false})

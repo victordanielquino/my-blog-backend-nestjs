@@ -20,8 +20,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('API')
-    .setDescription('BLOG VIRTUAL')
+    .setDescription('DOCUMENTS OF API BLOG VIRTUAL')
     .setVersion('1.0')
+    .addBearerAuth()
     //.addTag('cats')
     .build();
 
