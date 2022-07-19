@@ -1,2 +1,2 @@
 export * from './user.dto';
-export * from './rol.dto';
+export * from './role.dto';

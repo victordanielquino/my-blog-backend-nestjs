@@ -4,12 +4,12 @@ import {
   IsNotEmpty,
   IsPositive,
   Length,
-  IsEnum, IsBoolean
+  IsEnum, IsBoolean, IsArray
 } from "class-validator";
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 
 import { EnumToString } from "../../../helpers/enumToString";
-import { StateEnum } from "../../../shared/enums";
+import { RoleEnum, StateEnum } from "../../../shared/enums";
 
 export class UserDto {
   @IsString()
@@ -28,20 +28,15 @@ export class UserDto {
   @ApiProperty()
   readonly enabled: boolean;
 
-  /*@IsEnum(StateEnum, {message: `Opcion invalida. Se esperaba: ${EnumToString(StateEnum)}`, each:true})
-  @IsNotEmpty()
-  @ApiProperty()
-  readonly state: StateEnum[];*/
-
   @IsEnum(StateEnum, {message: `Opcion invalida. Se esperaba: ${EnumToString(StateEnum)}`, each: true})
   @IsNotEmpty()
   @ApiProperty()
-  readonly state: StateEnum[];
+  readonly state: StateEnum;
 
+  @IsArray()
   @IsNotEmpty()
-  @IsPositive()
   @ApiProperty()
-  readonly rolId: number;
+  readonly rolesIds: number[];
 }
 
 export class UserUpdateDto extends PartialType(UserDto) {}

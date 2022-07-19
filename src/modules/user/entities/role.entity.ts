@@ -1,22 +1,31 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity, JoinColumn,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from "typeorm";
 import { StateEnum } from "../../../shared/enums";
 import { User } from "./user.entity";
+import { AppRoles } from "../../../app.roles";
 
-@Entity({ name: 'rols' })
-export class Rol {
+@Entity({ name: 'roles' })
+export class Role {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 7, unique: true })
-  initial: string;
+  @Column({ type: 'varchar', length: 20, unique: true, nullable: false })
+  name: string;
 
-  @Column({ type: 'varchar', length: 50})
+  @Column({ type: 'text', unique: true, nullable: false})
   description: string;
 
   @Column({ type: 'varchar', length: 5, default: 'AC'})
-  state: StateEnum[];
+  state: string;
 
-  @OneToMany(() => User, (user) => user.rol)
+  @ManyToMany(type => User, user => user.roles)
+  @JoinColumn()
   users: User[];
 
   @CreateDateColumn({

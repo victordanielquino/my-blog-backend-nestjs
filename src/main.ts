@@ -25,17 +25,19 @@ async function bootstrap() {
     .setDescription('DOCUMENTS OF API BLOG VIRTUAL')
     .setVersion('1.0')
     .addBearerAuth()
-    //.addTag('cats')
+    .addTag('API')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
+  app.setGlobalPrefix('api');
+
   // habilitar acceso a todos CORS:
   app.enableCors();
 
   // user default:
-  await setDefaultUser();
+  //await setDefaultUser();
   //await defaulUser();
 
   //logger.log(`Server is running in port: ${await app.getUrl()}`);

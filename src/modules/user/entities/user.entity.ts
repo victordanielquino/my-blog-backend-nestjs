@@ -3,13 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn, ManyToOne,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  JoinColumn, ManyToMany, JoinTable
 } from "typeorm";
 
-import { Rol } from "./rol.entity";
+import { Role } from "./role.entity";
 import { hash } from "bcrypt";
 import { MaxLength, MinLength } from "class-validator";
 import { StateEnum } from "../../../shared/enums";
@@ -20,9 +20,9 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @MinLength(6)
+  @MinLength(4)
   @MaxLength(128)
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 25, unique: true, nullable: false })
   username: string;
 
   @Exclude()
@@ -34,8 +34,12 @@ export class User {
   @Column({type: 'boolean', default: false})
   enabled: boolean;
 
-  @Column({type: 'varchar', length: 5})
-  state: StateEnum[];
+  @Column({type: 'varchar', length: 5, default: 'AC'})
+  state: string;
+
+  @ManyToMany(type => Role, role => role.users, { eager: true })
+  @JoinTable({ name: 'user_roles' })
+  roles: Role[];
 
   @CreateDateColumn({
     name: 'create_at',
@@ -50,9 +54,6 @@ export class User {
     default: () => 'CURRENT_TIMESTAMP',
   })
   updateAt: Date;
-
-  @ManyToOne(() => Rol, (rol) => rol.users)
-  rol: Rol;
 
   @BeforeInsert()
   @BeforeUpdate()

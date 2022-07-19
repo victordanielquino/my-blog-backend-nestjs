@@ -1,3 +1,4 @@
 export enum StateEnum {
-  'AC'
+  ACTIVE = 'AC',
+  NO_ACTIVE = 'NA'
 }
