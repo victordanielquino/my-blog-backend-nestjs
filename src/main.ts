@@ -3,7 +3,7 @@ import { ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 import { AppModule } from './app.module';
-import { setDefaultUser } from "./common/config/default-user";
+import { userDefault } from "./common/config/user-default";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -37,10 +37,9 @@ async function bootstrap() {
   app.enableCors();
 
   // user default:
-  //await setDefaultUser();
-  //await defaulUser();
+  await userDefault();
 
   //logger.log(`Server is running in port: ${await app.getUrl()}`);
-  await app.listen( 3000);
+  await app.listen( process.env.PORT || 3000);
 }
 bootstrap();

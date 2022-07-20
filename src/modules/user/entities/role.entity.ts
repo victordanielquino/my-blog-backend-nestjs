@@ -6,9 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
-import { StateEnum } from "../../../shared/enums";
 import { User } from "./user.entity";
-import { AppRoles } from "../../../app.roles";
+import { Exclude } from "class-transformer";
 
 @Entity({ name: 'roles' })
 export class Role {
@@ -28,6 +27,7 @@ export class Role {
   @JoinColumn()
   users: User[];
 
+  @Exclude()
   @CreateDateColumn({
     name: 'create_at',
     type: 'timestamptz',
@@ -35,6 +35,7 @@ export class Role {
   })
   createAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({
     name: 'update_at',
     type: 'timestamptz',

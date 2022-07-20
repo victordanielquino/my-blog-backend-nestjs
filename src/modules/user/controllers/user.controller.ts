@@ -1,17 +1,28 @@
 import { Controller, Get, Post, Put, Delete, ParseIntPipe, Param, Body } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { InjectRolesBuilder, RolesBuilder } from "nest-access-control";
 
 import { UserService } from "../services/user.service";
 import { UserDto, UserUpdateDto } from "../dtos";
 import { AuthDecorator } from "../../../core/auth/decorators";
-import { AppResouces } from "../../../app.roles";
+import { UserDecorator } from "../../../common/decorators";
+import { PayloadTokenDto } from "../../../core/auth/dtos";
+import { AppResourcesEnum } from "../../../shared/enums";
 
 @ApiTags('Controller: Users')
 @Controller('user')
 export class UserController {
-  constructor(private readonly _userService: UserService) {}
+  constructor(
+    private readonly _userService: UserService,
+    @InjectRolesBuilder() private readonly _rolesBuilder: RolesBuilder
+  ) {}
 
   @Get()
+  @AuthDecorator({
+    possession: 'any',
+    action: 'read',
+    resource: AppResourcesEnum.USER
+  })
   async getMany() {
     const data = await this._userService.getMany();
     return {
@@ -20,42 +31,64 @@ export class UserController {
     }
   }
 
-  /*@AuthDecorator({
-    possession: 'any',
-    action: 'create',
-    resource: AppResouces.USER
-  })*/
   @Get(':id')
-  async getOne(@Param('id', ParseIntPipe)id: number) {
-    const data = await this._userService.getOne(id);
+  @AuthDecorator({
+    possession: 'own',
+    action: 'read',
+    resource: AppResourcesEnum.USER
+  })
+  async getOne(
+    @Param('id', ParseIntPipe)id: number,
+    @UserDecorator() user: PayloadTokenDto
+  ) {
+    let data;
+    if (this._rolesBuilder.can(user.roles).readAny(AppResourcesEnum.USER).granted) {
+      // esto es un admin:
+      data = await this._userService.getOne(id);
+    } else {
+      // esto es un author:
+      data = await this._userService.getOne(id, user.id);
+    }
     return {
-      message: 'ok',
+      message: 'getOne user ok',
       data
     }
   }
 
+  @Post()
   @AuthDecorator({
     possession: 'any',
     action: 'create',
-    resource: AppResouces.USER
+    resource: AppResourcesEnum.USER
   })
-  @Post()
   async createOne(@Body() dto: UserDto) {
     const data = await this._userService.createOne(dto);
     return {
-      message: 'ok',
+      message: 'create user ok',
       data
     }
   }
 
-  @AuthDecorator({
-    possession: 'any',
-    action: 'create',
-    resource: AppResouces.USER
-  })
   @Put(':id')
-  async updateOne(@Param('id', ParseIntPipe) id: number, @Body() dto: UserUpdateDto) {
-    const data = await this._userService.updateOne(id, dto);
+  @AuthDecorator({
+    possession: 'own',
+    action: 'update',
+    resource: AppResourcesEnum.USER
+  })
+  async updateOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UserUpdateDto,
+    @UserDecorator() user: PayloadTokenDto
+  ) {
+    let data;
+    if (this._rolesBuilder.can(user.roles).updateAny(AppResourcesEnum.USER).granted) {
+      // esto es un admin:
+      data = await this._userService.updateOne(id, dto);
+    } else {
+      // esto es un author:
+      const {rolesIds, ...rest} = dto;
+      data = await this._userService.updateOne(id, rest, user.id);
+    }
     return {
       message: 'User edit',
       data
@@ -64,8 +97,8 @@ export class UserController {
 
   @AuthDecorator({
     possession: 'any',
-    action: 'create',
-    resource: AppResouces.USER
+    action: 'delete',
+    resource: AppResourcesEnum.USER
   })
   @Delete(':id')
   async deleteOne(@Param('id', ParseIntPipe) id: number) {

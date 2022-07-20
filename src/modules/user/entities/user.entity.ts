@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  JoinColumn, ManyToMany, JoinTable
+  JoinColumn, ManyToMany, JoinTable, OneToMany
 } from "typeorm";
 
 import { Role } from "./role.entity";
@@ -14,6 +14,7 @@ import { hash } from "bcrypt";
 import { MaxLength, MinLength } from "class-validator";
 import { StateEnum } from "../../../shared/enums";
 import { Exclude } from "class-transformer";
+import { Post } from "../../post/post.entity";
 
 @Entity({ name: 'users' })
 export class User {
@@ -31,16 +32,20 @@ export class User {
   @Column({ type: 'varchar', length: 255})
   password: string;
 
-  @Column({type: 'boolean', default: false})
+  @Column({type: 'boolean', default: true})
   enabled: boolean;
 
   @Column({type: 'varchar', length: 5, default: 'AC'})
   state: string;
 
   @ManyToMany(type => Role, role => role.users, { eager: true })
-  @JoinTable({ name: 'user_roles' })
+  @JoinTable({ name: 'users_roles', joinColumn: {name: 'user_id'}, inverseJoinColumn: {name:'role_id'} })
   roles: Role[];
 
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
+
+  @Exclude()
   @CreateDateColumn({
     name: 'create_at',
     type: 'timestamptz',
@@ -48,6 +53,7 @@ export class User {
   })
   createAt: Date;
 
+  @Exclude()
   @UpdateDateColumn({
     name: 'update_at',
     type: 'timestamptz',

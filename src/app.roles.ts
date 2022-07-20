@@ -1,29 +1,33 @@
 import { RolesBuilder } from "nest-access-control";
 
-export enum AppRoles {
-  AUTH = "AUTHOR",
-  ADMIN = 'ADMINISTRADOR'
-}
-
-export enum AppResouces {
-  USER = 'user',
-  POST = 'post',
-  ROLE = 'role'
-}
+import { AppResourcesEnum, RoleEnum } from "./shared/enums";
 
 export const roles: RolesBuilder = new RolesBuilder()
 
 roles
   // AUTHOR:
-  .grant(AppRoles.AUTH)
-  .updateOwn([AppResouces.USER])
-  .deleteOwn([AppResouces.USER])
-  .createOwn([AppResouces.POST])
-  .updateOwn([AppResouces.POST])
-  .deleteOwn([AppResouces.POST])
+  .grant(RoleEnum.AUTHOR)
+
+  .readOwn([AppResourcesEnum.USER])
+  //.createOwn([])
+  .updateOwn([AppResourcesEnum.USER])
+  .deleteOwn([AppResourcesEnum.USER])
+
+  .readOwn([AppResourcesEnum.ROLE])
+  // .createOwn([])
+  // .updateOwn([])
+  // .deleteOwn([])
+
+  // .readOwn([])
+  .createOwn([AppResourcesEnum.POST])
+  .updateOwn([AppResourcesEnum.POST])
+  .deleteOwn([AppResourcesEnum.POST])
+
   // Admin:
-  .grant(AppRoles.ADMIN)
-  .extend(AppRoles.AUTH)
-  .createAny([AppResouces.USER, AppResouces.ROLE])
-  .updateAny([AppResouces.USER, AppResouces.ROLE, AppResouces.POST])
-  .deleteAny([AppResouces.USER, AppResouces.ROLE, AppResouces.POST])
+  .grant(RoleEnum.ADMIN)
+  .extend(RoleEnum.AUTHOR)
+  .readAny([AppResourcesEnum.USER, AppResourcesEnum.ROLE])
+  .createAny([AppResourcesEnum.USER, AppResourcesEnum.ROLE])
+  .updateAny([AppResourcesEnum.USER, AppResourcesEnum.ROLE, AppResourcesEnum.POST])
+  .deleteAny([AppResourcesEnum.USER, AppResourcesEnum.ROLE, AppResourcesEnum.POST])
+
