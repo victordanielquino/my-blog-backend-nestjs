@@ -5,6 +5,9 @@ import { hash } from "bcrypt";
 const AppDataSource = new DataSource({
   type: "postgres",
   url:process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 export const userDefault = async () => {
