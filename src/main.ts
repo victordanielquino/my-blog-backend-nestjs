@@ -22,7 +22,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('API')
-    .setDescription('DOCUMENTS OF API BLOG VIRTUAL')
+    .setDescription('DOCUMENTS OF API BLOG VIRTUAL BY VICTOR QUINO')
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('API')
@@ -37,7 +37,7 @@ async function bootstrap() {
   app.enableCors();
 
   // user default:
-  // await userDefault();
+  await userDefault();
 
   //logger.log(`Server is running in port: ${await app.getUrl()}`);
   await app.listen( process.env.PORT || 3000);
